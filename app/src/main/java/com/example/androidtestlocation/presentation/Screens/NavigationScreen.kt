@@ -34,10 +34,12 @@ import com.example.androidtestlocation.R
 import com.example.androidtestlocation.presentation.navigation.NavRoutes
 import com.example.androidtestlocation.presentation.navigation.bottomNavItems
 import com.example.androidtestlocation.presentation.viewModels.LocationViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.androidtestlocation.presentation.viewModels.NavViewModel
 
 
 @Composable
-fun BottomNavigationWithFab() {
+fun BottomNavigationWithFab(viewModel: NavViewModel = viewModel()) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -51,7 +53,8 @@ fun BottomNavigationWithFab() {
                     bottomNavItems.forEachIndexed { index, item ->
                         if (index == 2) {
                             FloatingActionButton(
-                                onClick = {  },
+                                onClick = { viewModel.addLocation()
+                                          },
                                 shape = CircleShape,
                                 containerColor = Color(0xFFCFD2CC)
                             ) {
@@ -98,8 +101,8 @@ fun BottomNavigationWithFab() {
                 Color(0xFFFAFAFA)
             ) ){
             composable(NavRoutes.LocationRoute.route){
-                val viewModel = hiltViewModel<LocationViewModel>()
-                LocationScreen(viewModel)
+                val viewModelL = hiltViewModel<LocationViewModel>()
+                LocationScreen(viewModelL)
             }
             composable(NavRoutes.SettingsRoute.route){
 

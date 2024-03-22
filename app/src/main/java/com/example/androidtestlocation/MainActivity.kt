@@ -11,7 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.androidtestlocation.presentation.Screens.BottomNavigationWithFab
+import com.example.androidtestlocation.presentation.viewModels.NavViewModel
 import com.example.androidtestlocation.ui.theme.AndroidTestLocationTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,7 +29,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color(0xFFFAFAFA)
                 ) {
-                    BottomNavigationWithFab()
+                    val viewModel = hiltViewModel<NavViewModel>()
+                    BottomNavigationWithFab(viewModel)
                 }
             }
         }
