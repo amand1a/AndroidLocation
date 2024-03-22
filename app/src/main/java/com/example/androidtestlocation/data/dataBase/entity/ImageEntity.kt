@@ -3,6 +3,7 @@ package com.example.androidtestlocation.data.dataBase.entity
 import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -14,7 +15,8 @@ import androidx.room.PrimaryKey
             childColumns = ["locationId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index(value = ["locationId"])]
 )
 data class ImageEntity(
     @PrimaryKey(autoGenerate = true) val id: Int,

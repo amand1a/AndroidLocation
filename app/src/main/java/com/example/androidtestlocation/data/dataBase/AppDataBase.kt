@@ -13,7 +13,7 @@ import com.example.androidtestlocation.data.dataBase.entity.LocationEntity
 
 @Database(
     entities = [LocationEntity::class , ImageEntity::class],
-    version = 1
+    version = 1, exportSchema = false
 )
 @TypeConverters(
     BitmapConverter::class,
