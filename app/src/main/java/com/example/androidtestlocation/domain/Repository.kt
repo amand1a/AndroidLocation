@@ -10,7 +10,7 @@ interface Repository {
     fun getLocations(): Flow<List<LocationModel>>
 
 
-    suspend fun deleteImages(id: Int)
+    suspend fun deleteImages(list: List<Int>)
 
     suspend fun setChapter(string: String)
 

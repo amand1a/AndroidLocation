@@ -25,8 +25,11 @@ class LocationRepository @Inject constructor(
       }
     }
 
-    override suspend fun deleteImages(id: Int) {
-        imageDao.deleteImageById(id)
+    override suspend fun deleteImages(list: List<Int>) {
+        list.forEach{
+            imageDao.deleteImageById(it)
+        }
+
     }
 
     override suspend fun setChapter(string: String) {

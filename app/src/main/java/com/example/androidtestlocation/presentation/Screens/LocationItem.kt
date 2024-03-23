@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,14 +61,17 @@ import coil.compose.rememberImagePainter
 import com.example.androidtestlocation.R
 import com.example.androidtestlocation.domain.models.LocationModel
 import com.example.androidtestlocation.presentation.ext.loadBitmapFromUri
+import com.example.androidtestlocation.presentation.viewModels.LocationItemViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LocationItem(location: LocationModel, focusManager: FocusManager,modifier: Modifier = Modifier) {
+fun LocationItem(viewModel: LocationItemViewModel = viewModel(), location: LocationModel, focusManager: FocusManager, modifier: Modifier = Modifier) {
+
+    val state = viewModel.state.collectAsState()
 
     val context = LocalContext.current
 
@@ -169,7 +173,8 @@ fun LocationItem(location: LocationModel, focusManager: FocusManager,modifier: M
                                         onClick = {
                                             if (!isElementDeleted.value) {
                                                 selectImageFullScreen = index
-                                                showFullScreenImage.value = true}
+                                                showFullScreenImage.value = true
+                                            }
                                         },
                                         onLongClick = {
                                             isElementDeleted.value = true
@@ -216,5 +221,5 @@ fun LocationItem(location: LocationModel, focusManager: FocusManager,modifier: M
 @Composable
 fun PreviewLocationItem(){
     val focusManager = LocalFocusManager.current
-    LocationItem(LocationModel(1,"", listOf()),focusManager)
+    LocationItem(location =  LocationModel(1,"", listOf()), focusManager =  focusManager)
 }

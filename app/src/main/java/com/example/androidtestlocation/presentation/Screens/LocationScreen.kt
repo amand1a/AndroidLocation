@@ -50,7 +50,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.androidtestlocation.R
+import com.example.androidtestlocation.presentation.viewModels.LocationItemViewModel
 import com.example.androidtestlocation.presentation.viewModels.LocationViewModel
 import org.w3c.dom.Text
 
@@ -102,7 +104,9 @@ fun LocationScreen(viewModel: LocationViewModel = viewModel(), modifier: Modifie
         VerticalPager(state = pagerState, reverseLayout = true ,  modifier = Modifier
             .fillMaxWidth()
             .weight(1f)) { page ->
-            LocationItem(locations.value[page], focusManager = focusManager)
+            val itemViewModel  = hiltViewModel<LocationItemViewModel>()
+            itemViewModel.init(locations.value[page])
+            LocationItem(itemViewModel,locations.value[page], focusManager = focusManager)
         }
 
 

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -20,7 +21,7 @@ import javax.inject.Inject
 class LocationViewModel @Inject constructor(private val repository: LocationRepository) : ViewModel() {
 
 
-    private val _state = MutableStateFlow<LocationsState>(LocationsState("" ,"", listOf()))
+    private val _state = MutableStateFlow<String>("")
 
     val state  = _state.asStateFlow()
     
@@ -32,30 +33,19 @@ class LocationViewModel @Inject constructor(private val repository: LocationRepo
     )
 
     fun updateChapter(str: String){
-        _state.update {
-            it.copy(chapter = str)
-        }
+        _state.value = str
     }
 
-    fun updateLocationName(str: String){
-        _state.update {
-            it.copy(locationName = str)
-        }
-    }
 
-    fun updateNewImage(images: List<ImageModel>){
-        _state.update {
-            it.copy(newImages =images )
+    fun changeChapterName(){
+        viewModelScope.launch {
+
         }
     }
 }
 
 
-data class LocationsState(
-    val chapter: String,
-    val locationName: String,
-    val newImages: List<ImageModel>
-)
+
 
 
 
