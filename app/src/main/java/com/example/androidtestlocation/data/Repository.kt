@@ -1,10 +1,12 @@
 package com.example.androidtestlocation.data
 
 import android.graphics.Bitmap
-import com.example.androidtestlocation.data.dataBase.dao.ChapterDao
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.androidtestlocation.data.dataBase.dao.ImageDao
 import com.example.androidtestlocation.data.dataBase.dao.LocationDao
-import com.example.androidtestlocation.data.dataBase.entity.ChapterEntity
 import com.example.androidtestlocation.data.dataBase.entity.ImageEntity
 import com.example.androidtestlocation.data.dataBase.entity.LocationEntity
 import com.example.androidtestlocation.domain.Repository
@@ -17,7 +19,7 @@ import javax.inject.Inject
 class LocationRepository @Inject constructor(
     private val locationDao: LocationDao,
     private val imageDao: ImageDao,
-    private val chapterDao: ChapterDao
+    private val dataStore: DataStore<Preferences>
 ) : Repository {
     override fun getLocations(): Flow<List<LocationModel>> {
       return   locationDao.getAllLocationsWithImages().map{
@@ -36,7 +38,10 @@ class LocationRepository @Inject constructor(
     }
 
     override suspend fun setChapter(string: String) {
-        chapterDao.insertOrUpdate(ChapterEntity(1,string))
+
+        dataStore.edit {
+            it[CHAPTER_KEY] = string
+        }
     }
 
     override suspend fun addImages(idL: Int, images: List<Bitmap>  ) {
@@ -52,13 +57,13 @@ class LocationRepository @Inject constructor(
         locationDao.insertLocation(LocationEntity(0,""))
     }
 
-    override suspend fun getChapter(): String {
-       return if(chapterDao.getChapter().isEmpty()){
-             ""
+    override suspend fun getChapter(): Flow<String> {
+        return dataStore.data.map {
+            it[CHAPTER_KEY] ?: ""
         }
-        else {
+    }
 
-           chapterDao.getChapter()[0].name
-       }
+    companion object{
+        val CHAPTER_KEY =  stringPreferencesKey("chapter")
     }
 }

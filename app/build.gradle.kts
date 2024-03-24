@@ -77,9 +77,9 @@ dependencies {
     //Coil
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    //dataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
     //Room
-
-
     implementation("androidx.room:room-runtime:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
