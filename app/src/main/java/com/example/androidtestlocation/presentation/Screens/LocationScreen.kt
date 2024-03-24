@@ -60,6 +60,7 @@ import org.w3c.dom.Text
 @Composable
 fun LocationScreen(viewModel: LocationViewModel = viewModel(), modifier: Modifier = Modifier){
 
+    val state = viewModel.state.collectAsState()
     val locations = viewModel.locations.collectAsState()
     val focusManager = LocalFocusManager.current
     val pagerState = rememberPagerState(pageCount = {
@@ -84,7 +85,7 @@ fun LocationScreen(viewModel: LocationViewModel = viewModel(), modifier: Modifie
                 .fillMaxWidth()
                 .padding(16.dp), shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFEDF3F4))) {
-                    TextField(value = "dw321", onValueChange = {} , modifier = Modifier
+                    TextField(value = state.value, onValueChange = {viewModel.updateChapter(it)} , modifier = Modifier
                         .wrapContentHeight()
                         .fillMaxWidth(),
                         singleLine = true,
@@ -96,7 +97,9 @@ fun LocationScreen(viewModel: LocationViewModel = viewModel(), modifier: Modifie
                             )
                         },colors = TextFieldDefaults.colors(unfocusedIndicatorColor = Color.Transparent ,
                             unfocusedContainerColor = Color.Transparent),
-                        keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()}))
+                        keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()
+                        viewModel.changeChapterName()
+                        }))
             }
         }
 

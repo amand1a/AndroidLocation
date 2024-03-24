@@ -20,4 +20,6 @@ interface Repository {
 
     suspend fun addLocation()
 
+    suspend fun getChapter(): String
+
 }

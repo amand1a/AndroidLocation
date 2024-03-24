@@ -22,4 +22,7 @@ class DbModule {
     @Provides
     fun provideImageDao(database: AppDatabase) = database.imageDao()
 
+
+    @Provides
+    fun  provideChapterDao(database: AppDatabase) = database.ChapterDao()
 }

@@ -1,8 +1,10 @@
 package com.example.androidtestlocation.data
 
 import android.graphics.Bitmap
+import com.example.androidtestlocation.data.dataBase.dao.ChapterDao
 import com.example.androidtestlocation.data.dataBase.dao.ImageDao
 import com.example.androidtestlocation.data.dataBase.dao.LocationDao
+import com.example.androidtestlocation.data.dataBase.entity.ChapterEntity
 import com.example.androidtestlocation.data.dataBase.entity.ImageEntity
 import com.example.androidtestlocation.data.dataBase.entity.LocationEntity
 import com.example.androidtestlocation.domain.Repository
@@ -15,6 +17,7 @@ import javax.inject.Inject
 class LocationRepository @Inject constructor(
     private val locationDao: LocationDao,
     private val imageDao: ImageDao,
+    private val chapterDao: ChapterDao
 ) : Repository {
     override fun getLocations(): Flow<List<LocationModel>> {
       return   locationDao.getAllLocationsWithImages().map{
@@ -33,11 +36,12 @@ class LocationRepository @Inject constructor(
     }
 
     override suspend fun setChapter(string: String) {
-        TODO("Not yet implemented")
+        chapterDao.insertOrUpdate(ChapterEntity(1,string))
     }
 
     override suspend fun addImages(idL: Int, images: List<Bitmap>  ) {
        val arr  = images.map { ImageEntity(0 , idL, it) }
+        imageDao.insertImages(arr)
     }
 
     override suspend fun setNameOfLocation(id: Int, string: String) {
@@ -46,5 +50,15 @@ class LocationRepository @Inject constructor(
 
     override suspend fun addLocation() {
         locationDao.insertLocation(LocationEntity(0,""))
+    }
+
+    override suspend fun getChapter(): String {
+       return if(chapterDao.getChapter().isEmpty()){
+             ""
+        }
+        else {
+
+           chapterDao.getChapter()[0].name
+       }
     }
 }

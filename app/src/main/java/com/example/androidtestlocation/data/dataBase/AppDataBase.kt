@@ -6,13 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.androidtestlocation.data.dataBase.converter.BitmapConverter
+import com.example.androidtestlocation.data.dataBase.dao.ChapterDao
 import com.example.androidtestlocation.data.dataBase.dao.ImageDao
 import com.example.androidtestlocation.data.dataBase.dao.LocationDao
+import com.example.androidtestlocation.data.dataBase.entity.ChapterEntity
 import com.example.androidtestlocation.data.dataBase.entity.ImageEntity
 import com.example.androidtestlocation.data.dataBase.entity.LocationEntity
 
 @Database(
-    entities = [LocationEntity::class , ImageEntity::class],
+    entities = [LocationEntity::class , ImageEntity::class,ChapterEntity::class],
     version = 1, exportSchema = false
 )
 @TypeConverters(
@@ -22,6 +24,8 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun imageDao(): ImageDao
     abstract fun LocationDao(): LocationDao
+
+    abstract fun ChapterDao(): ChapterDao
 
     companion object {
         private const val DB_NAME = "app.db"

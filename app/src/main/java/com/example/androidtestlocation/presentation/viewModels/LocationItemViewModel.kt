@@ -43,10 +43,10 @@ class LocationItemViewModel @Inject constructor(
         }
     }
 
-    fun updateNewImage(images: List<Bitmap>){
-        viewModelScope.launch {
+    suspend fun updateNewImage(images: List<Bitmap>){
+
             rep.addImages(state.value.id , images)
-        }
+
     }
 
     fun deleteImages(){
@@ -59,6 +59,14 @@ class LocationItemViewModel @Inject constructor(
     fun addImageToDelete(id: Int){
         _selectedImagesForDelete.update {
             it.apply { add(id) }
+        }
+    }
+
+
+    fun deleteImageToDelete(id: Int){
+        _selectedImagesForDelete.update {
+            it.remove(id)
+            it
         }
     }
 

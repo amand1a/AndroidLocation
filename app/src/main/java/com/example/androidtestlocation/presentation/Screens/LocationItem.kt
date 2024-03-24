@@ -86,20 +86,24 @@ fun LocationItem(viewModel: LocationItemViewModel = viewModel(), location: Locat
     var  selectImageFullScreen by remember {
         mutableStateOf(0)
     }
-    var bitmapsImg by remember { mutableStateOf(listOf<Bitmap>()) }
+
+
     val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
         CoroutineScope(Dispatchers.IO).launch {
-            uris.forEach { uri ->
-                val bitmap = loadBitmapFromUri(uri, context)
-                if (bitmap != null) {
-                    bitmapsImg += bitmap
-                }
-            }
+            val bitmaps= uris.map { uri ->
+                loadBitmapFromUri(uri, context)
+            }.filterNotNull()
+
+
+
+
+            viewModel.updateNewImage(bitmaps)
+
         }
     }
 
     if(showFullScreenImage.value){
-        MyPopup(bitmap = bitmapsImg[selectImageFullScreen] , onDismiss = {showFullScreenImage.value = false})
+        MyPopup(bitmap = state.value.images[selectImageFullScreen].bitmap , onDismiss = {showFullScreenImage.value = false})
     }
 
     val list = (1..10).map { it.toString() }
@@ -127,7 +131,7 @@ fun LocationItem(viewModel: LocationItemViewModel = viewModel(), location: Locat
                 ) {
                     Box(modifier = Modifier.wrapContentHeight()) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            TextField(value = "dw321", onValueChange = {}, modifier = Modifier
+                            TextField(value = state.value.name, onValueChange = {viewModel.updateLocationName(it)}, modifier = Modifier
                                 .wrapContentHeight()
                                 .weight(1f),
                                 singleLine = true,
@@ -142,7 +146,8 @@ fun LocationItem(viewModel: LocationItemViewModel = viewModel(), location: Locat
                                     unfocusedTextColor = Color(0xFF869495),
                                     unfocusedContainerColor = Color.Transparent
                                 ),
-                                keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()})
+                                keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()
+                                viewModel.saveLocationName()})
                             )
                             IconButton(onClick = { galleryLauncher.launch("image/*") }, modifier = Modifier.padding(end = 8.dp)) {
                                 Icon(
@@ -163,7 +168,7 @@ fun LocationItem(viewModel: LocationItemViewModel = viewModel(), location: Locat
                             bottom = 8.dp
                         ), modifier = Modifier.heightIn(max = 1000.dp)
                     ) {
-                        items(bitmapsImg.size) { index ->
+                        items(state.value.images.size) { index ->
                             Card(
                                 modifier = Modifier
                                     .padding(4.dp)
@@ -183,12 +188,16 @@ fun LocationItem(viewModel: LocationItemViewModel = viewModel(), location: Locat
                             ) {
                                 Box(Modifier.fillMaxSize()) {
                                     Image(modifier= Modifier.fillMaxSize(),
-                                        bitmap = bitmapsImg[index].asImageBitmap(),
+                                        bitmap = state.value.images[index].bitmap.asImageBitmap(),
                                         contentDescription = "",
                                         contentScale = ContentScale.Crop
                                     )
                                     if(isElementDeleted.value){
-                                    DeleteCheckButton(changeChoose = {}, modifier = Modifier.align(
+                                    DeleteCheckButton(changeChoose = {
+                                                                     if(it){
+                                                                         viewModel.addImageToDelete(state.value.images[index].id)
+                                                                     }else viewModel.deleteImageToDelete(state.value.images[index].id)
+                                    }, modifier = Modifier.align(
                                         Alignment.TopEnd))
                                     }
                                 }
@@ -202,7 +211,8 @@ fun LocationItem(viewModel: LocationItemViewModel = viewModel(), location: Locat
         }
 
         if(isElementDeleted.value){
-        Button(onClick = { isElementDeleted.value = false }, modifier = Modifier
+        Button(onClick = { isElementDeleted.value = false
+                         viewModel.deleteImages()}, modifier = Modifier
             .border(
                 width = 3.dp, color = Color.White,
                 shape = RoundedCornerShape(16.dp)

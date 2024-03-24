@@ -31,6 +31,18 @@ class LocationViewModel @Inject constructor(private val repository: LocationRepo
         initialValue = listOf<LocationModel>()
 
     )
+    init{
+        viewModelScope.launch {
+            try {
+
+
+        _state.value = repository.getChapter()
+
+            }catch (e: Exception){
+                _state.value = ""
+            }
+            }
+    }
 
     fun updateChapter(str: String){
         _state.value = str
@@ -39,7 +51,7 @@ class LocationViewModel @Inject constructor(private val repository: LocationRepo
 
     fun changeChapterName(){
         viewModelScope.launch {
-
+                repository.setChapter(state.value)
         }
     }
 }
