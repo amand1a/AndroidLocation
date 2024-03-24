@@ -48,91 +48,100 @@ import com.example.androidtestlocation.presentation.viewModels.NavViewModel
 
 @Composable
 fun BottomNavigationWithFab(viewModel: NavViewModel = viewModel()) {
+
     val navController = rememberNavController()
-
-    Scaffold(
-        bottomBar = {
-            Box(modifier = Modifier
-                .background(Color.Transparent)) {
-
+    Box() {
+        Scaffold(
+            bottomBar = {
                 Box(
                     modifier = Modifier
-                        .padding(top = 50.dp)
+                        .background(Color.Transparent)
                 ) {
-                    Surface(
-                        shadowElevation = 12.dp
-                    ) {
+                        Surface(
+                            shadowElevation = 12.dp
+                        ) {
 
 
-                        Row (modifier = Modifier.background(Color.White).height(50.dp)) {
-                            val navBackStackEntry by navController.currentBackStackEntryAsState()
-                            val currentRoute = navBackStackEntry?.destination?.route
-                            bottomNavItems.forEachIndexed { index, item ->
-                                if (index == 2) {
-                                    Spacer(modifier = Modifier.weight(1f))
-                                } else {
-                                    NavigationBarItem(
-                                        icon = {
-                                            Icon(
-                                                painterResource(id = item.iconId),
-                                                contentDescription = item.title
+                            Row(modifier = Modifier.background(Color.White).height(50.dp)) {
+                                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                                val currentRoute = navBackStackEntry?.destination?.route
+                                bottomNavItems.forEachIndexed { index, item ->
+                                    if (index == 2) {
+                                        Spacer(modifier = Modifier.weight(1f))
+                                    } else {
+                                        NavigationBarItem(
+                                            icon = {
+                                                Icon(
+                                                    painterResource(id = item.iconId),
+                                                    contentDescription = item.title
+                                                )
+                                            },
+                                            modifier = Modifier.height(40.dp),
+                                            selected = currentRoute == item.route,
+                                            onClick = {
+                                                navController.navigate(item.route) {
+                                                    popUpTo(navController.graph.startDestinationId)
+                                                    launchSingleTop = true
+                                                }
+                                            },
+                                            alwaysShowLabel = false,
+                                            colors = NavigationBarItemDefaults.colors(
+                                                selectedIconColor = Color.Black,
+                                                unselectedIconColor = Color(0xFFCFD2CC),
+                                                selectedTextColor = Color.Transparent,
+                                                indicatorColor = Color.White
                                             )
-                                        },
-                                        modifier = Modifier.height(40.dp),
-                                        selected = currentRoute == item.route,
-                                        onClick = {  navController.navigate(item.route) {
-                                            popUpTo(navController.graph.startDestinationId)
-                                            launchSingleTop = true
-                                        } },
-                                        alwaysShowLabel = false,
-                                        colors = NavigationBarItemDefaults.colors(
-                                            selectedIconColor = Color.Black,
-                                            unselectedIconColor = Color(0xFFCFD2CC),
-                                            selectedTextColor = Color.Transparent,
-                                            indicatorColor = Color.White
                                         )
-                                    )
-                                }
+                                    }
 
+                                }
                             }
+
                         }
 
-                    }
 
                 }
-                IconButton(onClick = { viewModel.addLocation()},
-                    modifier = Modifier.align(Alignment.TopCenter).size(100.dp)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.add),
-                        contentDescription = ""
+
+            },
+
+
+            ) {
+            NavHost(
+                navController = navController,
+                startDestination = NavRoutes.LocationRoute.route,
+                modifier = Modifier
+                    .padding(it)
+                    .background(
+                        Color(0xFFFAFAFA)
                     )
+            ) {
+                composable(NavRoutes.LocationRoute.route) {
+                    val viewModelL = hiltViewModel<LocationViewModel>()
+                    LocationScreen(viewModelL)
                 }
-            }
+                composable(NavRoutes.SettingsRoute.route) {
 
-        },
+                }
+                composable(NavRoutes.ExpensesRoute.route) {
 
+                }
+                composable(NavRoutes.MoodboardRoute.route) {
 
-    ) {
-        NavHost(navController = navController, startDestination = NavRoutes.LocationRoute.route , modifier = Modifier
-            .padding(it.calculateBottomPadding())
-            .background(
-                Color(0xFFFAFAFA)
-            ) ){
-            composable(NavRoutes.LocationRoute.route){
-                val viewModelL = hiltViewModel<LocationViewModel>()
-                LocationScreen(viewModelL)
-            }
-            composable(NavRoutes.SettingsRoute.route){
-
-            }
-            composable(NavRoutes.ExpensesRoute.route){
-
-            }
-            composable(NavRoutes.MoodboardRoute.route){
-
+                }
             }
         }
+
+        IconButton(
+            onClick = { viewModel.addLocation() },
+            modifier = Modifier.align(Alignment.BottomCenter).size(100.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.add),
+                contentDescription = ""
+            )
+        }
     }
+
 }
 
 @Preview(showBackground = true)

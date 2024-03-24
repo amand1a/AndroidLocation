@@ -104,11 +104,10 @@ fun LocationScreen(viewModel: LocationViewModel = viewModel(), modifier: Modifie
         }
 
 
-        VerticalPager(state = pagerState, reverseLayout = true ,  modifier = Modifier
+        VerticalPager(state = pagerState,  modifier = Modifier
             .fillMaxWidth()
             .weight(1f)) { page ->
             val itemViewModel  = hiltViewModel<LocationItemViewModel>()
-            itemViewModel.init(locations.value[page])
             LocationItem(itemViewModel,locations.value[page], focusManager = focusManager)
         }
 

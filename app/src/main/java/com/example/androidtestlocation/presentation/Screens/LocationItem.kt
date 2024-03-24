@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -70,7 +71,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LocationItem(viewModel: LocationItemViewModel = viewModel(), location: LocationModel, focusManager: FocusManager, modifier: Modifier = Modifier) {
-
+    viewModel.init(location)
     val state = viewModel.state.collectAsState()
 
     val context = LocalContext.current
@@ -107,7 +108,7 @@ fun LocationItem(viewModel: LocationItemViewModel = viewModel(), location: Locat
     }
 
     val list = (1..10).map { it.toString() }
-    Box(modifier = modifier.padding(top = 8.dp, bottom = 8.dp)) {
+    Box(modifier = modifier.padding(top = 8.dp, bottom = 58.dp)) {
         Card(
             elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
             modifier = Modifier
