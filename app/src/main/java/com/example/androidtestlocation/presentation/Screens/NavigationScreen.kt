@@ -2,14 +2,21 @@ package com.example.androidtestlocation.presentation.Screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
@@ -18,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -44,59 +52,69 @@ fun BottomNavigationWithFab(viewModel: NavViewModel = viewModel()) {
 
     Scaffold(
         bottomBar = {
-            Surface(shadowElevation = 12.dp) {
-                BottomAppBar(
-                    containerColor = Color.White,
+            Box(modifier = Modifier
+                .background(Color.Transparent)) {
+
+                Box(
+                    modifier = Modifier
+                        .padding(top = 50.dp)
                 ) {
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val currentRoute = navBackStackEntry?.destination?.route
-                    bottomNavItems.forEachIndexed { index, item ->
-                        if (index == 2) {
-                            FloatingActionButton(
-                                onClick = { viewModel.addLocation()
-                                          },
-                                shape = CircleShape,
-                                containerColor = Color(0xFFCFD2CC)
-                            ) {
-                                Image(
-                                    painterResource(id = R.drawable.add), contentDescription = "",
-                                    contentScale = ContentScale.FillHeight,
-                                )
-                            }
-                        } else {
-                            NavigationBarItem(
-                                icon = {
-                                    Icon(
-                                        painterResource(id = item.iconId),
-                                        contentDescription = item.title
+                    Surface(
+                        shadowElevation = 12.dp
+                    ) {
+
+
+                        Row (modifier = Modifier.background(Color.White).height(50.dp)) {
+                            val navBackStackEntry by navController.currentBackStackEntryAsState()
+                            val currentRoute = navBackStackEntry?.destination?.route
+                            bottomNavItems.forEachIndexed { index, item ->
+                                if (index == 2) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                } else {
+                                    NavigationBarItem(
+                                        icon = {
+                                            Icon(
+                                                painterResource(id = item.iconId),
+                                                contentDescription = item.title
+                                            )
+                                        },
+                                        modifier = Modifier.height(40.dp),
+                                        selected = currentRoute == item.route,
+                                        onClick = {  navController.navigate(item.route) {
+                                            popUpTo(navController.graph.startDestinationId)
+                                            launchSingleTop = true
+                                        } },
+                                        alwaysShowLabel = false,
+                                        colors = NavigationBarItemDefaults.colors(
+                                            selectedIconColor = Color.Black,
+                                            unselectedIconColor = Color(0xFFCFD2CC),
+                                            selectedTextColor = Color.Transparent,
+                                            indicatorColor = Color.White
+                                        )
                                     )
-                                },
-                                modifier = Modifier.height(40.dp),
-                                selected = item.title == currentRoute,
-                                onClick = {  navController.navigate(item.route) {
-                                    popUpTo(navController.graph.startDestinationId)
-                                    launchSingleTop = true
-                                } },
-                                alwaysShowLabel = false,
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = Color.Black,
-                                    unselectedIconColor = Color(0xFFCFD2CC),
-                                    selectedTextColor = Color.Transparent,
-                                    indicatorColor = Color.White
-                                )
-                            )
+                                }
+
+                            }
                         }
 
                     }
 
                 }
+                IconButton(onClick = { viewModel.addLocation()},
+                    modifier = Modifier.align(Alignment.TopCenter).size(100.dp)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.add),
+                        contentDescription = ""
+                    )
+                }
             }
+
         },
 
 
     ) {
         NavHost(navController = navController, startDestination = NavRoutes.LocationRoute.route , modifier = Modifier
-            .padding(it)
+            .padding(it.calculateBottomPadding())
             .background(
                 Color(0xFFFAFAFA)
             ) ){
@@ -117,9 +135,10 @@ fun BottomNavigationWithFab(viewModel: NavViewModel = viewModel()) {
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun BottomNavigation(content: () -> Unit) {
-
+fun BottomNavigation() {
+    BottomNavigationWithFab()
 }
 
 data class BottomNavItem(
@@ -127,3 +146,4 @@ data class BottomNavItem(
     val icon: ImageVector,
     val route: String
 )
+
